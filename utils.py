@@ -59,7 +59,8 @@ def PlotPowerFactors(windPF,solarPF,T):
     #Then tick and format with matplotlib:
     axs[0].xaxis.set_major_locator(hours)
     axs[0].xaxis.set_major_formatter(h_fmt)
-
+    axs[0].set_xlabel("Time")
+    
     f.autofmt_xdate()
     plt.show()
     name = "outputs/renewable_gen"
@@ -124,6 +125,7 @@ def PlotAllVars(windPF,solarPF,demand,rtPrice,T):
 
         axs[s,0].set_xlim([data.index[0],  data.index[len(data.index)-1]+ timedelta(minutes=15)])
         axs[s,0].set_ylim(0,0.8)
+        axs[s,0].set_ylabel('Power [p.f.]')
         axs[s,0].set_title("Wind and Solar Power Factor in Scenario "+str(s+1))
         axs[s,0].grid()
 
@@ -135,7 +137,7 @@ def PlotAllVars(windPF,solarPF,demand,rtPrice,T):
     #Then tick and format with matplotlib:
     axs[0,0].xaxis.set_major_locator(hours)
     axs[0,0].xaxis.set_major_formatter(h_fmt)
-    
+    axs[4,0].xaxis.set_label_text("Time")
     
     for s in range(5):
         dataNameS  = [dataNames[2]+"_s"+str(s+1),dataNames[3]+"_s"+str(s+1)]
@@ -148,7 +150,9 @@ def PlotAllVars(windPF,solarPF,demand,rtPrice,T):
 
         axs[s,1].set_xlim([data.index[0],  data.index[len(data.index)-1]+ timedelta(minutes=15)])
         axs[s,1].set_ylim(6,12)
+        axs[s,1].set_ylabel('Demand [Mw]')
         ax2.set_ylim(0,32)
+        ax2.set_ylabel('Price [$/Mwh]')
         axs[s,1].set_title("Demand and Price in Scenario "+str(s+1))
         
         axs[s,1].grid()
@@ -162,7 +166,8 @@ def PlotAllVars(windPF,solarPF,demand,rtPrice,T):
     #Then tick and format with matplotlib:
     axs[0,1].xaxis.set_major_locator(hours)
     axs[0,1].xaxis.set_major_formatter(h_fmt)
-
+    axs[4,1].xaxis.set_label_text("Time")
+    
     f.autofmt_xdate()
     plt.show()
     name = "outputs/renewable_gen_demand"
@@ -245,6 +250,7 @@ def PlotEnergyMix(xsol,ysol,demand,windPF,solarPF,Cs,nScenarios,peakHour,rtPrice
         axs[s].plot(data.index,data.Demand,color="k")
         axs[s].set_xlim([data.index[0],  data.index[len(data.index)-1]+ timedelta(minutes=15)])
         axs[s].set_ylim(-4,12)
+        axs[s].set_ylabel('Power [Mw]')
         axs[s].set_title("Scenario "+str(s+1))
         axs[s].grid()
 
@@ -256,6 +262,7 @@ def PlotEnergyMix(xsol,ysol,demand,windPF,solarPF,Cs,nScenarios,peakHour,rtPrice
     #Then tick and format with matplotlib:
     axs[0].xaxis.set_major_locator(hours)
     axs[0].xaxis.set_major_formatter(h_fmt)
+    axs[4].xaxis.set_label_text("Time")
 
     f.autofmt_xdate()
     plt.show()
