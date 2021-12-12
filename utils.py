@@ -4,6 +4,172 @@ import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 from datetime import datetime, timedelta
 
+def PlotPowerFactors(windPF,solarPF,T):
+    data = pd.DataFrame({"WindPower_s1":  windPF[:T,0],
+                         "SolarPower_s1": solarPF[:T,0],
+                         "WindPower_s2":  windPF[:T,1],
+                         "SolarPower_s2": solarPF[:T,1],
+                         "WindPower_s3":  windPF[:T,2],
+                         "SolarPower_s3": solarPF[:T,2],
+                         "WindPower_s4":  windPF[:T,3],
+                         "SolarPower_s4": solarPF[:T,3],
+                         "WindPower_s5":  windPF[:T,4],
+                         "SolarPower_s5": solarPF[:T,4],                       
+                         "Time": pd.date_range('2021-01-01 00:00', '2021-01-01 23:45', freq = '15min')
+                        })
+    
+    data = data.set_index('Time')
+    
+    # Plot
+    f, (ax1, ax2,ax3,ax4,ax5) = plt.subplots(5, 1, sharex=True)
+    axs = [ax1, ax2,ax3,ax4,ax5]
+
+    hours = mdates.HourLocator(interval = 2)
+    h_fmt = mdates.DateFormatter('%H')
+    width = 0.008
+    px = 12
+    py = 16
+
+    #ax.stackplot(data.index,data.SolarPower,data.WindPower,data.GasBase,data.GasPeak,data.GasOption,
+     #            data.SpotMarket)
+
+    dataNames = ['WindPower','SolarPower']
+    Labels = ['Wind Power','Solar Power']
+    #Colors = ["tab:blue","tab:red","tab:orange","tab:green","tab:purple","tab:cyan"]
+    Colors = plt.cm.Dark2(range(6))
+
+    for s in range(5):
+        dataNameS  = [dataNames[0]+"_s"+str(s+1),dataNames[1]+"_s"+str(s+1)]
+        tp = 0*data.iloc[:,0]
+        tn = 0*data.iloc[:,0]
+        
+        axs[s].plot(data.index,data[dataNameS[0]],color="b",label = Labels[0])
+        axs[s].plot(data.index,data[dataNameS[1]],color="g",label = Labels[1])
+
+        axs[s].set_xlim([data.index[0],  data.index[len(data.index)-1]+ timedelta(minutes=15)])
+        axs[s].set_ylim(0,0.8)
+        axs[s].set_title("Scenario "+str(s+1))
+        axs[s].grid()
+
+        if s==2:
+            axs[s].legend(loc='center left', bbox_to_anchor=(1, 0.5))
+    #handles, labels = axs[0].get_legend_handles_labels()
+    #f.legend()
+    f.set_size_inches(px,py)
+    #Then tick and format with matplotlib:
+    axs[0].xaxis.set_major_locator(hours)
+    axs[0].xaxis.set_major_formatter(h_fmt)
+
+    f.autofmt_xdate()
+    plt.show()
+    name = "outputs/renewable_gen"
+    f.savefig(name+'.png',bbox_inches = 'tight')
+    f.savefig(name+'.pdf',bbox_inches = 'tight')
+    
+def PlotAllVars(windPF,solarPF,demand,rtPrice,T):
+    data = pd.DataFrame({"WindPower_s1":  windPF[:T,0],
+                         "SolarPower_s1": solarPF[:T,0],
+                         "Demand_s1":  demand[:T,0],
+                         "Price_s1": rtPrice[:T,0],
+                         
+                         "WindPower_s2":  windPF[:T,1],
+                         "SolarPower_s2": solarPF[:T,1],
+                         "Demand_s2":  demand[:T,1],
+                         "Price_s2": rtPrice[:T,1],
+                         
+                         "WindPower_s3":  windPF[:T,2],
+                         "SolarPower_s3": solarPF[:T,2],
+                         "Demand_s3":  demand[:T,2],
+                         "Price_s3": rtPrice[:T,2],
+                         
+                         "WindPower_s4":  windPF[:T,3],
+                         "SolarPower_s4": solarPF[:T,3],
+                         "Demand_s4":  demand[:T,3],
+                         "Price_s4": rtPrice[:T,3],
+                         
+                         "WindPower_s5":  windPF[:T,4],
+                         "SolarPower_s5": solarPF[:T,4],
+                         "Demand_s5":  demand[:T,4],
+                         "Price_s5": rtPrice[:T,4],
+                         
+                         "Time": pd.date_range('2021-01-01 00:00', '2021-01-01 23:45', freq = '15min')
+                        })
+    
+    data = data.set_index('Time')
+    
+    # Plot
+    f, axs = plt.subplots(5, 2, sharex=True)
+
+    hours = mdates.HourLocator(interval = 2)
+    h_fmt = mdates.DateFormatter('%H')
+    width = 0.008
+    px = 12
+    py = 16
+
+    #ax.stackplot(data.index,data.SolarPower,data.WindPower,data.GasBase,data.GasPeak,data.GasOption,
+     #            data.SpotMarket)
+
+    dataNames = ['WindPower','SolarPower',"Demand","Price"]
+    Labels = ['Wind Power','Solar Power',"Demand","Price"]
+    #Colors = ["tab:blue","tab:red","tab:orange","tab:green","tab:purple","tab:cyan"]
+    Colors = plt.cm.Dark2(range(6))
+
+    for s in range(5):
+        dataNameS  = [dataNames[0]+"_s"+str(s+1),dataNames[1]+"_s"+str(s+1)]
+        tp = 0*data.iloc[:,0]
+        tn = 0*data.iloc[:,0]
+        
+        axs[s,0].plot(data.index,data[dataNameS[0]],color="b",label = Labels[0])
+        axs[s,0].plot(data.index,data[dataNameS[1]],color="g",label = Labels[1])
+
+        axs[s,0].set_xlim([data.index[0],  data.index[len(data.index)-1]+ timedelta(minutes=15)])
+        axs[s,0].set_ylim(0,0.8)
+        axs[s,0].set_title("Wind and Solar Power Factor in Scenario "+str(s+1))
+        axs[s,0].grid()
+
+        if s==2:
+            axs[s,0].legend(loc='center left', bbox_to_anchor=(2.3, 0.15))
+    #handles, labels = axs[0].get_legend_handles_labels()
+    #f.legend()
+    f.set_size_inches(px,py)
+    #Then tick and format with matplotlib:
+    axs[0,0].xaxis.set_major_locator(hours)
+    axs[0,0].xaxis.set_major_formatter(h_fmt)
+    
+    
+    for s in range(5):
+        dataNameS  = [dataNames[2]+"_s"+str(s+1),dataNames[3]+"_s"+str(s+1)]
+        tp = 0*data.iloc[:,0]
+        tn = 0*data.iloc[:,0]
+        
+        axs[s,1].plot(data.index,data[dataNameS[0]],color="m",label = Labels[2])
+        ax2 = axs[s,1].twinx()
+        ax2.plot(data.index,data[dataNameS[1]],color="c",label = Labels[3])
+
+        axs[s,1].set_xlim([data.index[0],  data.index[len(data.index)-1]+ timedelta(minutes=15)])
+        axs[s,1].set_ylim(6,12)
+        ax2.set_ylim(0,32)
+        axs[s,1].set_title("Demand and Price in Scenario "+str(s+1))
+        
+        axs[s,1].grid()
+
+        if s==(2):
+            axs[s,1].legend(loc='center left', bbox_to_anchor=(1.1, 0.5))
+            ax2.legend(loc='center left', bbox_to_anchor=(1.1, 0.35))
+    #handles, labels = axs[0].get_legend_handles_labels()
+    #f.legend()
+    f.set_size_inches(px,py)
+    #Then tick and format with matplotlib:
+    axs[0,1].xaxis.set_major_locator(hours)
+    axs[0,1].xaxis.set_major_formatter(h_fmt)
+
+    f.autofmt_xdate()
+    plt.show()
+    name = "outputs/renewable_gen_demand"
+    f.savefig(name+'.png',bbox_inches = 'tight')
+    f.savefig(name+'.pdf',bbox_inches = 'tight')
+
+
 def GetScenario(s,x,y,demand,windPF,solarPF,Cs,nScenarios,peakHour,rtPrice,T):
     data = pd.DataFrame({"Demand" : demand[:T,s],
                         "WindPower": y[0].value*windPF[:T,s],
@@ -41,7 +207,7 @@ def GetAllVariables(x,y,demand,windPF,solarPF,Cs,nScenarios,peakHour,rtPrice,T):
     
     return(data_all)
 
-def Plot1(xsol,ysol,demand,windPF,solarPF,Cs,nScenarios,peakHour,rtPrice,T,name):
+def PlotEnergyMix(xsol,ysol,demand,windPF,solarPF,Cs,nScenarios,peakHour,rtPrice,T,name):
     f, (ax1, ax2,ax3,ax4,ax5) = plt.subplots(5, 1, sharex=True)
     axs = [ax1, ax2,ax3,ax4,ax5]
 
@@ -80,6 +246,7 @@ def Plot1(xsol,ysol,demand,windPF,solarPF,Cs,nScenarios,peakHour,rtPrice,T,name)
         axs[s].set_xlim([data.index[0],  data.index[len(data.index)-1]+ timedelta(minutes=15)])
         axs[s].set_ylim(-4,12)
         axs[s].set_title("Scenario "+str(s+1))
+        axs[s].grid()
 
         if s==2:
             axs[s].legend(loc='center left', bbox_to_anchor=(1, 0.5))
